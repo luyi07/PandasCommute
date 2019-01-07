@@ -16,20 +16,20 @@ int main(){
 	cout<<"\t        |  PandasCommute 3.1       by Yi Lu |\n";
 	cout<<"\t\t\\-----------------------------------/ \n";
 	cout<<"\nGreetings. PandasCommute is at your service.\n";
-	cout<<"\nI'm a small code to calculate scalar operators, which helps evaluate non-energy-weighted and energy-weighted sum rules of E&M, beta transition strengths in the shell model.\n";
-	cout<<"\nI need three files as input, one for single particle orbits i.e. to define the valence space, one for general interactions, and one file for the one-body transition operator.\n";
+	cout<<"\nI'm a small code to calculate scalar operators, which help evaluate transition sum rules in the shell model.\n";
+	cout<<"\nI need three files as input, one for single particle orbits i.e. to define the valence space, one for general interactions, and one for the one-body transition operator.\n";
 
 	char file_NEWSR[80]="output/O_NEWSR.int";
 	char file_EWSR[80]="output/O_EWSR.int";
 
         string sp;
-        cout<<"\nPlease input the filename for s.p. info, as examplified in example/sd-shell/input/pn.sp \n\t";
+        cout<<"\nPlease input the filename for s.p. info, as examplified as input/pn.sp \n\t";
         cin>> sp;
 	char file_sp[80];
 	for(int i=0;i<80;i++)file_sp[i]=sp[i];
 
         string GMEpn;
-        cout<<"\nPlease input the filename for general interactions, as examplified in example/sd-shell/input/GMEpn.int \n\t";
+        cout<<"\nPlease input the filename for general interactions, as examplified as input/GMEpn.int \n\t";
         cin>> GMEpn;
 	char file_GMEpn[80];
 	for(int i=0;i<80;i++)file_GMEpn[i]=GMEpn[i];
@@ -55,7 +55,7 @@ int main(){
 	char file_F[80];
 	if(switch_F_book == 'n'){
 		string Fname;
-		cout<<"\nPlease input the filename for one-body transition operator, as examplified in example/sd-shell/input/F.coef \n\t";
+		cout<<"\nPlease input the filename for one-body transition operator, as examplified as input/F.coef \n\t";
 		cin>> Fname;
 		for(int i=0;i<80;i++)file_F[i]=Fname[i];
 	}
