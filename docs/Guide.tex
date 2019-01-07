@@ -1,0 +1,137 @@
+\documentclass{article}
+\usepackage{geometry}
+\usepackage{mathrsfs}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{dcolumn}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{float} 
+\usepackage{longtable}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{rotating}
+\usepackage{upgreek}
+\usepackage{setspace}
+
+\usepackage[titletoc]{appendix}
+\geometry{left=2cm, right=2cm, top=2cm, bottom=2cm}
+
+\newenvironment{figurehere}
+{\def\@captype{figure}}
+{}
+\makeatother
+
+
+\def\E{\mathrm{E}}
+\begin{document}
+\begin{spacing}{1.5}
+\setlength{\abovedisplayskip}{1ex} 
+\setlength{\belowdisplayskip}{1ex} 
+
+\newcommand{\codetext}[1]{ \textcolor[rgb]{0.2,0.2,0.3}{\bf#1}}
+
+\section{Introduction}
+{\it PandasCommute} is a small code to generate matrix elements of one- and two-body operators, which can be used to evaluate non-energy-weighted sum rules (NEWSR) and energy-weighted sum rules (EWSR) of transitions in the shell model.
+
+The strength function for a transition operator $\hat{F}$ from an initial state $i$ at energy $E_i$, to a final state $f$ at absolute energy $E_f$ and 
+excitation energy $E_x = E_f - E_i$ is defined as
+\begin{equation}
+\label{strength}
+S(E_i, E_x) = \sum_f \delta(E_x - E_f + E_i ) \left | \langle f  \left | \hat{F}  \right | i \rangle \right |^2
+\end{equation}
+Sum rules are moments of the strength function,
+\begin{equation}
+\label{sum_rules}
+S_k(E_i) = \int \left ( E_x \right )^k S(E_i, E_x) \, dE_x.
+\end{equation}
+
+The sum rules can be computed as expectation values of $\hat{O}_{NEWSR}$ and $\hat{O}_{EWSR}$ on the initial state ({\bf see more details in Ref. \cite{arxiv}}),
+\begin{eqnarray}
+S_0(E_i) &=& 	\langle J_i M_i | \hat{O}_{NEWSR} | J_i M_i \rangle      \\
+S_1(E_i) &=& 	\langle J_i M_i | \hat{O}_{EWSR} | J_i M_i \rangle      
+\end{eqnarray}
+
+$\hat{O}_{NEWSR}$ and $\hat{O}_{EWSR}$ are written in the form of a p-n scheme ``Hamiltonian'', so they can be easily used in shell model codes,
+\begin{eqnarray}
+\hat{O}_{NEWSR(EWSR)} &=& \sum_{ab} g_{ab} [j_a] (\hat{a}^\dagger \otimes \tilde{b})_{00}
+		\nonumber\\
+		&&- \sum_{abcd} \frac{ \sqrt{1+\delta_{ab}} \sqrt{1+\delta_{cd}} }{4}
+W^{pp(nn)}(abcd;I) [I] \left[ (\hat{a}^\dagger \otimes \hat{b}^\dagger)_I \otimes (\tilde{c} \otimes \tilde{d})_I \right]_{00}
+		\nonumber\\
+		&&- \sum_{a_\pi b_\nu c_\pi d_\nu} W^{pn}(a_\pi b_\nu c_\pi d_\nu;I) [I] \left[ (\hat{a}^\dagger_\pi \otimes \hat{b}^\dagger_\nu)_I \otimes (\tilde{c}_\pi \otimes \tilde{d}_\nu)_I \right]_{00}.
+\nonumber\\
+\label{O-output-form}
+\end{eqnarray}
+This code {\it PandasCommute} produces $g_{ab}$ and $W(abcd;I)$ values in Eq. (\ref{O-output-form}), for $\hat{O}_{NEWSR(EWSR)}$ in output files.
+
+\section{HOW TO RUN  {\it PandasCommute}}
+The code runs under Unix system, though it can be easily adapted to Windows or other systems.\\
+
+(1) Compile:\\
+
+If you \codetext{make}
+
+from the main directory \codetext{/PandasCommute/}, the code will be compiled, and an excutable file \codetext{PandasCommute.x} will be generated.\\
+
+(2) Input files:\\
+
+Starting from directory \codetext{/PandasCommute}, you need three input files. 
+When started, the code will ask for full names of them separately, please remember to input the filename extensions as well.
+
+-- Definition of single-particle space, as examplified in \codetext{input/pn.sp}
+
+-- Input interaction one+two-body matrix elements, as examplified in \codetext{input/GMEpn.int}
+
+These must be defined in an explicit proton-neutron formalism, that is, proton and neutron orbits are given separate indices. 
+
+-- Input reduced matrix elements of one-body transition operator, examplified in \codetext{input/F.coef}
+
+The code will ask if you want it to automatically generate the one-body transition operator file. 
+If confirmed, it will ask for details of transition types, e.g. electric quadrupole transition with explicit effective charges.
+Otherwise, it will ask for full filename you prepared yourself.
+
+Definitions and examples of format can be found in \codetext{/PandasCommute/docs/input-files-example.docx} or \codetext{input-files-example.pdf}.
+Sample input files can be found in \codetext{/PandasCommute/examples}.
+
+An important note on normalization of the two-body matrix elements. 
+All interaction two-body matrix elements are defined as matrix elements between two-body states:
+\begin{eqnarray}
+Wxy(ab,cd;I) = \langle axby;I | V | cxdy;I \rangle,
+\end{eqnarray}
+where $I$ = the angular momentum, a,b,c,d label the orbits, and x,y are p or n. 
+For proton-proton (pp) and neutron-neutron, the states are normalized, that is, 
+\begin{eqnarray}
+< ab;I | ab;I > = 1.
+\end{eqnarray}
+For proton-neutron states, there are two conventions. 
+The BIGSTICK convention is to use normalized proton neutron states, while the NuShellX convention is to use unnormalized states: 
+\begin{eqnarray}
+\langle ab;I | ab;I \rangle = \frac{1+\delta_{ab}}{2}.
+\end{eqnarray}
+Hence we have the relation
+\begin{eqnarray}
+W^{pn}_{norm} (ab,cd;I) = \frac{2}{ \sqrt{(1+\delta_{ab})(1+\delta_{cd})}} W^{pn}_{unnorm}(ab,cd;I).
+\end{eqnarray}
+Your provider of interactions should tell you the normalization convention; if they are associated with NuShell/NuShellX, the proton-neutron matrix elements are almost assuredly "unnormalized."
+\codetext{PandasCommute} is compatible with both conventions, and keep outputs and inputs in one consistent convention.\\
+
+(3) Run!\\
+
+The code runs in a simple dialogue mode.
+It askes for input filenames and related information, then starts calculations.
+
+The final files are \codetext{output/O\_NEWSR.int} and \codetext{output/O\_EWSR.int}, corresponding to the matrix elements for the non-energy-weighted and energy-weighted sum rule operators, respectively. These may need to be re-formatted appropriately for your many-body code.  (Because the induced one-body terms are not necessarily diagonal in a multi-shell system, the format is slightly different, albeit straightforward, for the input format for \codetext{NuShell/BIGSTICK}.)
+\end{spacing}
+
+{\bf Acknowledgement:} 
+I'm indebted to Calvin Johnson for his help and contributions.
+When I code and optimize this, he has been sending me feedbacks and telling me things  via emails.
+Great teacher.
+
+\begin{thebibliography}{99}
+\bibitem{arxiv} http://arxiv.org/abs/1710.03187.
+\end{thebibliography}
+\end{document}
+
